@@ -1,5 +1,5 @@
 import SearchBar from "@/components/SearchBar";
-import { Container } from "./styles";
+import { CardList, Container, Text } from "./styles";
 import Card from "@/components/Card";
 
 export default function App() {
@@ -36,7 +36,15 @@ export default function App() {
   return (
     <Container>
       <SearchBar />
+
+      <Text style={{
+        marginBlock: 20
+      }}>Loaded Files</Text>
+      <CardList>
+
       {csvMock.map((mock) => <Card data={mock} />)}
+
+      </CardList>
     </Container>
   )
 }

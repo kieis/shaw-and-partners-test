@@ -10,6 +10,6 @@ export default {
     font_size: {
         sm: 8,
         md: 10,
-        lg: 16
+        lg: 14
     }
 }
