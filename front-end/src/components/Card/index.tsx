@@ -1,19 +1,31 @@
-import { Container, Text, Row } from "./styles";
+import { Container, Row, Text } from "./styles";
+
+export type CardDataProps = {
+  data: {
+    [s: string]: string
+  }[];
+  columns: string[];
+};
 
 interface Props {
-    data: string[][];
+  card: CardDataProps;
 }
 
-export default function Card({ data }: Props) {
+export function Card({ card }: Props) {
   return (
     <Container>
-      {data.map((row) => (
-        <Row>
-          {row.map((column) => (
-            <Text>{column}</Text>
-          ))}
-        </Row>
-      ))}
+      <Row>
+        {card?.columns.map((column) => (
+          <Text key={column}>{column}</Text>
+        ))}
+      </Row>
+
+      {card?.data.map((row, idx) => {
+        const result = card?.columns.map(
+          (column) => row && <Text key={row[column]}>{row[column]}</Text>
+        );
+        return <Row key={idx}>{result.map((row) => row)}</Row>;
+      })}
     </Container>
   );
 }

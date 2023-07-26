@@ -8,8 +8,8 @@ export default {
         highlight: "#686de0"
     },
     font_size: {
-        sm: 8,
-        md: 10,
-        lg: 16
+        sm: 1.2,
+        md: 1.6,
+        lg: 2
     }
 }

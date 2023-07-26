@@ -6,14 +6,19 @@ type InputTextStyleProps = React.InputHTMLAttributes<HTMLInputElement> & {
     placeholder?: string;
 }
 
-export const Container = styled.div`
+type ContainerStyleProps = {
+    width?: string;
+}
+
+export const Container = styled.div<ContainerStyleProps>`
     display: flex;
+    flex-grow: 1;
     align-items: center;
     gap: 0.2rem;
     padding-left: 0.4rem;
 
-    width: 100%;
-    height: 1.5rem;
+    width: ${({ width }) => width ? width : "100%"};
+    height: 3rem;
     border-radius: 20px;
     background-color: white;
 
@@ -36,7 +41,7 @@ export const InputText = styled.input.attrs<InputTextStyleProps>(({ placeholder 
     flex: 1;
 
     ${({ theme }) => css`
-        font-size: ${theme.font_size.sm}px;
+        font-size: ${theme.font_size.sm}rem;
         color: ${theme.colors.secondary};
     `};
 
