@@ -1,17 +1,22 @@
-import { useState } from "react";
 import { Container, InputText, SearchIcon } from "./styles";
 
 interface Props {
-    placeholder?: string;
+  placeholder?: string;
+  value: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  width?: string;
 }
 
-export default function SearchBar({ placeholder }: Props) {
-    const [text, setText] = useState<string>("");
-
-    return (
-        <Container >
-            <SearchIcon />
-            <InputText placeholder={placeholder} />
-        </Container>
-    )
+export default function SearchBar({
+  placeholder,
+  onChange,
+  value,
+  width,
+}: Props) {
+  return (
+    <Container width={width}>
+      <SearchIcon />
+      <InputText placeholder={placeholder} onChange={onChange} value={value} />
+    </Container>
+  );
 }
