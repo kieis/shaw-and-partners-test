@@ -14,7 +14,7 @@ interface Props {
 export function Card({ card }: Props) {
   return (
     <Container>
-      <Row>
+      <Row isHeader>
         {card?.columns.map((column) => (
           <Text key={column}>{column}</Text>
         ))}
