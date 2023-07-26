@@ -25,7 +25,7 @@ export const Text = styled.span`
     flex: 1;
 
     ${({ theme }) => css`
-        font-size: ${theme.font_size.sm}px;
+        font-size: ${theme.font_size.sm}rem;
         color: ${theme.colors.text_primary};
     `};
     text-align: center;
