@@ -3,8 +3,7 @@ import FileUpload from "@/components/FileUpload";
 import InfoBox from "@/components/InfoBox";
 import Loader from "@/components/Loader";
 import SearchBar from "@/components/SearchBar";
-import { parse } from "papaparse";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { CardList, Container, Header } from "./styles";
 
@@ -13,6 +12,35 @@ export default function App() {
   const [filterValue, setFilterValue] = useState("");
   const [cards, setCards] = useState<CardDataProps[]>([]);
   const [filteredCards, setFilteredCards] = useState<CardDataProps[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+
+      const response = await fetch(
+        import.meta.env.VITE_BASE_API_URL + "/users",
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + import.meta.env.VITE_ACCESS_TOKEN,
+          },
+        }
+      );
+
+      const { data } = await response.json();
+      data?.files.forEach((file: any) => {
+        const cardData = {
+          data: file.content,
+          columns: Object.keys(file.content[0] as object),
+        } as CardDataProps;
+    
+        setCards((prevState) => [...prevState, cardData]);
+      });
+
+      setIsLoading(false);
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     setFilteredCards(cards);
@@ -36,31 +64,45 @@ export default function App() {
     setFilteredCards(toFilter);
   };
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOnChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     setIsLoading(true);
 
-    parse(e.target.files[0], {
-      header: true,
-      skipEmptyLines: true,
-      complete: function (results) {
-        setTimeout(() => {
-          const cardData = {
-            data: results.data,
-            columns: Object.keys(results.data[0] as object),
-          } as CardDataProps;
+    const formData = new FormData();
+    formData.append("file", e.target.files[0]);
 
-          setCards((prevState) => [...prevState, cardData]);
-
-          toast("File uploaded sucessfully!", {
-            type: "success",
-            position: "top-right",
-          });
-
-          setIsLoading(false);
-        }, 1000);
+    const response = await fetch(import.meta.env.VITE_BASE_API_URL + "/files", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + import.meta.env.VITE_ACCESS_TOKEN,
       },
+      body: formData,
     });
+
+    if (!response?.status?.toString().match(/20[01]/)) {
+      //regex checking 200 or 201
+      toast("Failed to upload!", {
+        type: "error",
+        position: "top-right",
+      });
+
+      return setIsLoading(false);
+    }
+
+    const { data } = await response.json();
+    const cardData = {
+      data: data.content,
+      columns: Object.keys(data.content[0] as object),
+    } as CardDataProps;
+
+    setCards((prevState) => [...prevState, cardData]);
+
+    toast("File uploaded sucessfully!", {
+      type: "success",
+      position: "top-right",
+    });
+
+    setIsLoading(false);
   };
 
   return (
