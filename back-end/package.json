@@ -11,6 +11,7 @@
     "prisma:migrate": "npx prisma migrate dev"
   },
   "dependencies": {
+    "@fastify/cors": "^8.3.0",
     "@fastify/middie": "^8.3.0",
     "@fastify/multipart": "^7.7.3",
     "@prisma/client": "^5.0.0",

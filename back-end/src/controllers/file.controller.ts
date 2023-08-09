@@ -43,7 +43,7 @@ export const create = async (request: FastifyRequest, reply: FastifyReply) => {
       return handleError(reply, RESPONSE.ERROR_403);
     }
 
-    reply.status(RESPONSE.SUCCESS.STATUS_CODE).send({ data: createdFile });
+    reply.status(RESPONSE.CREATED.STATUS_CODE).send({ data: createdFile });
   } catch (e) {
     handleError(reply, RESPONSE.ERROR_500);
   }

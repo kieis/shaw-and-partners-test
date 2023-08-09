@@ -4,8 +4,13 @@ import { API_PATH } from "./helpers/constants";
 import { multerContentParser } from "./middleware";
 import { fileRouter, userRouter } from "./routes";
 import prisma from "./services/prisma";
+import cors from '@fastify/cors'
 
 const server = fastify();
+server.register(cors, {
+  origin: true //accepting all
+})
+
 server.register(multerContentParser);
 
 server.get("/", (request, reply) => {
