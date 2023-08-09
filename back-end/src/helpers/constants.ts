@@ -1,6 +1,6 @@
-import { IResponse } from "./types";
+import { Response } from "./types";
 
-export const RESPONSE: IResponse = {
+export const RESPONSE: Response = {
   CREATED: {
     STATUS_CODE: 201,
     MESSAGE: undefined,
@@ -38,3 +38,5 @@ export const RESPONSE: IResponse = {
     MESSAGE: "TRY_AGAIN",
   },
 };
+
+export const API_PATH = "/api/";

@@ -1,6 +1,6 @@
 import { FastifyReply } from "fastify";
-import { IResponseData } from "./types";
+import { ResponseData } from "./types";
 
-export function handleError(reply: FastifyReply, error: IResponseData) {
-    return reply.status(error.STATUS_CODE).send(error.MESSAGE);
-  }
+export function handleError(reply: FastifyReply, error: ResponseData) {
+  return reply.status(error.STATUS_CODE).send(error.MESSAGE);
+}

@@ -6,16 +6,26 @@
   "scripts": {
     "build": "tsc",
     "start": "node ./bin/app.js",
-    "dev": "ts-node ./src/app.ts"
+    "dev": "nodemon ./src/app.ts",
+    "prisma:studio": "npx prisma studio",
+    "prisma:migrate": "npx prisma migrate dev"
   },
   "dependencies": {
+    "@fastify/middie": "^8.3.0",
+    "@fastify/multipart": "^7.7.3",
     "@prisma/client": "^5.0.0",
+    "csv-parse": "^5.4.0",
     "dotenv": "^16.3.1",
     "fastify": "^4.20.0",
+    "fastify-multer": "^2.0.3",
+    "fluent-json-schema": "^4.1.1",
+    "jsonwebtoken": "^9.0.1",
     "typescript": "^5.1.6"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.4.5",
+    "nodemon": "^3.0.1",
     "prisma": "^5.0.0",
     "ts-node": "^10.9.1"
   }

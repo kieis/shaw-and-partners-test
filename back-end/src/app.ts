@@ -1,15 +1,24 @@
-import fastify from "fastify";
 import "dotenv/config";
-import { fileRouter } from "./routes";
+import fastify from "fastify";
+import { API_PATH } from "./helpers/constants";
+import { multerContentParser } from "./middleware";
+import { fileRouter, userRouter } from "./routes";
 import prisma from "./services/prisma";
 
 const server = fastify();
+server.register(multerContentParser);
 
 server.get("/", (request, reply) => {
   reply.send("Server Running");
 });
 
-server.register(fileRouter, { prefix: "/api/files" });
+server.register(fileRouter, {
+  prefix: API_PATH + "files",
+});
+
+server.register(userRouter, {
+  prefix: API_PATH + "users",
+});
 
 server.listen({ port: Number(process.env.PORT || "3000") }, (err, address) => {
   if (err) {
