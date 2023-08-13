@@ -6,6 +6,7 @@ import SearchBar from "@/components/SearchBar";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { CardList, Container, Header } from "./styles";
+import { formatFetchedData } from "@/utils";
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,27 +17,28 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
+      try {
+        const response = await fetch(
+          import.meta.env.VITE_BASE_API_URL + "/users",
+          {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + import.meta.env.VITE_ACCESS_TOKEN,
+            },
+          }
+        );
 
-      const response = await fetch(
-        import.meta.env.VITE_BASE_API_URL + "/users",
-        {
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + import.meta.env.VITE_ACCESS_TOKEN,
-          },
-        }
-      );
-
-      const { data } = await response.json();
-      data?.files.forEach((file: any) => {
-        const cardData = {
-          data: file.content,
-          columns: Object.keys(file.content[0] as object),
-        } as CardDataProps;
-    
-        setCards((prevState) => [...prevState, cardData]);
-      });
-
+        const { data } = await response.json();
+        data?.files.forEach((file: any) => {
+          setCards((prevState) => [...prevState, formatFetchedData(file)]);
+          setIsLoading(false);
+        });
+      } catch (err) {
+        toast("Can't connect to server!", {
+          type: "error",
+          position: "top-right",
+        });
+      }
       setIsLoading(false);
     };
     fetchData();
@@ -67,40 +69,45 @@ export default function App() {
   const handleOnChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     setIsLoading(true);
+    
+    try {
+      const formData = new FormData();
+      formData.append("file", e.target.files[0]);
 
-    const formData = new FormData();
-    formData.append("file", e.target.files[0]);
+      const response = await fetch(
+        import.meta.env.VITE_BASE_API_URL + "/files",
+        {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + import.meta.env.VITE_ACCESS_TOKEN,
+          },
+          body: formData,
+        }
+      );
 
-    const response = await fetch(import.meta.env.VITE_BASE_API_URL + "/files", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + import.meta.env.VITE_ACCESS_TOKEN,
-      },
-      body: formData,
-    });
+      if (!response?.status?.toString().match(/20[01]/)) {
+        //regex checking 200 or 201
+        toast("Failed to upload!", {
+          type: "error",
+          position: "top-right",
+        });
 
-    if (!response?.status?.toString().match(/20[01]/)) {
-      //regex checking 200 or 201
-      toast("Failed to upload!", {
+        return setIsLoading(false);
+      }
+
+      const { data } = await response.json();
+      setCards((prevState) => [...prevState, formatFetchedData(data)]);
+
+      toast("File uploaded sucessfully!", {
+        type: "success",
+        position: "top-right",
+      });
+    } catch (err) {
+      toast("Can't upload file!", {
         type: "error",
         position: "top-right",
       });
-
-      return setIsLoading(false);
     }
-
-    const { data } = await response.json();
-    const cardData = {
-      data: data.content,
-      columns: Object.keys(data.content[0] as object),
-    } as CardDataProps;
-
-    setCards((prevState) => [...prevState, cardData]);
-
-    toast("File uploaded sucessfully!", {
-      type: "success",
-      position: "top-right",
-    });
 
     setIsLoading(false);
   };
